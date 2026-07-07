@@ -1,31 +1,98 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background:#f4f4f4;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+            margin:0;
+        }
+
+        .card{
+            background:white;
+            padding:30px;
+            border-radius:10px;
+            box-shadow:0 0 10px rgba(0,0,0,0.1);
+            text-align:center;
+            width:350px;
+        }
+
+        h1{
+            margin-bottom:10px;
+        }
+
+        p{
+            color:#555;
+        }
+
+        button{
+            padding:10px 20px;
+            border:none;
+            border-radius:5px;
+            cursor:pointer;
+            margin-top:15px;
+        }
+    </style>
 </head>
 <body>
 
-    <h1>Dashboard</h1>
-    <p>Login Successful</p>
+    <div class="card">
+        <h1>Dashboard</h1>
 
-    <button onclick="logout()">Logout</button>
+        <p>Welcome</p>
+
+        <h3 id="userEmail">Loading...</h3>
+
+        <button onclick="logout()">
+            Logout
+        </button>
+    </div>
 
 </body>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<script>
-    const supabaseUrl = "https://mfwcibpbeqqtgbyyught.supabase.co";
-    const supabaseKey = "sb_publishable_NvwPu7CHkFZkr45OyUO8oQ_FcY54C17";
+    <script>
+        const supabaseUrl = "https://mfwcibpbeqqtgbyyught.supabase.co/rest/v1/";
+        const supabaseKey = "sb_publishable_NvwPu7CHkFZkr45OyUO8oQ_FcY54C17";
 
-    const supabaseClient = supabase.createClient(
-      supabaseUrl,
-      supabaseKey
-    );
+        const supabaseClient = supabase.createClient(
+            supabaseUrl,
+            supabaseKey
+        );
 
-    async function logout() {
-      await supabaseClient.auth.signOut();
-      window.location.href = "index.html";
-    }
-</script>
+        async function checkUser() {
+
+            const {
+                data: { session }
+            } = await supabaseClient.auth.getSession();
+
+            if (!session) {
+                window.location.href = "index.html";
+                return;
+            }
+
+            const {
+                data: { user }
+            } = await supabaseClient.auth.getUser();
+
+            document.getElementById("userEmail").innerText =
+                user.email;
+        }
+
+        async function logout() {
+            await supabaseClient.auth.signOut();
+            window.location.href = "index.html";
+        }
+
+        checkUser();
+    </script>
 
 </html>
