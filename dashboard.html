@@ -1,47 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
 
     <style>
-        body{
+        body {
             font-family: Arial, sans-serif;
-            background:#f4f4f4;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            height:100vh;
-            margin:0;
+            background: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
         }
 
-        .card{
-            background:white;
-            padding:30px;
-            border-radius:10px;
-            box-shadow:0 0 10px rgba(0,0,0,0.1);
-            text-align:center;
-            width:350px;
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 350px;
         }
 
-        h1{
-            margin-bottom:10px;
+        h1 {
+            margin-bottom: 10px;
         }
 
-        p{
-            color:#555;
+        p {
+            color: #555;
         }
 
-        button{
-            padding:10px 20px;
-            border:none;
-            border-radius:5px;
-            cursor:pointer;
-            margin-top:15px;
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
         }
     </style>
 </head>
+
 <body>
 
     <div class="card">
@@ -49,18 +51,15 @@
 
         <p>Welcome</p>
 
-        <input
-type="text"
-id="noteInput"
-placeholder="Enter Note">
+        <input type="text" id="noteInput" placeholder="Enter Note">
 
-<br><br>
+        <br><br>
 
-<button onclick="addNote()">
-Add Note
-</button>
+        <button onclick="addNote()">
+            Add Note
+        </button>
 
-<div id="notes"></div>
+        <div id="notes"></div>
 
         <button onclick="logout()">
             Logout
@@ -68,42 +67,77 @@ Add Note
     </div>
 
 </body>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <script>
-        const supabaseUrl = "https://mfwcibpbeqqtgbyyught.supabase.co/rest/v1/";
-        const supabaseKey = "sb_publishable_NvwPu7CHkFZkr45OyUO8oQ_FcY54C17";
+<script>
+    const supabaseUrl = "https://mfwcibpbeqqtgbyyught.supabase.co/rest/v1/";
+    const supabaseKey = "sb_publishable_NvwPu7CHkFZkr45OyUO8oQ_FcY54C17";
 
-        const supabaseClient = supabase.createClient(
-            supabaseUrl,
-            supabaseKey
-        );
+    const supabaseClient = supabase.createClient(
+        supabaseUrl,
+        supabaseKey
+    );
 
-        async function checkUser() {
+    async function checkUser() {
 
-            const {
-                data: { session }
-            } = await supabaseClient.auth.getSession();
+        const {
+            data: { session }
+        } = await supabaseClient.auth.getSession();
 
-            if (!session) {
-                window.location.href = "index.html";
-                return;
-            }
-
-            const {
-                data: { user }
-            } = await supabaseClient.auth.getUser();
-
-            document.getElementById("userEmail").innerText =
-                user.email;
-        }
-
-        async function logout() {
-            await supabaseClient.auth.signOut();
+        if (!session) {
             window.location.href = "index.html";
+            return;
         }
 
-        checkUser();
-    </script>
+        const {
+            data: { user }
+        } = await supabaseClient.auth.getUser();
+
+        document.getElementById("userEmail").innerText = user.email;
+        loadNotes();
+    }
+
+    async function logout() {
+        await supabaseClient.auth.signOut();
+        window.location.href = "index.html";
+    }
+
+    async function addNote() {
+
+        const text =
+            document.getElementById("noteInput").value;
+
+        const { error } =
+            await supabaseClient
+                .from("notes")
+                .insert([
+                    { text }
+                ]);
+
+        if (error) {
+            alert(error.message);
+            return;
+        }
+
+        loadNotes();
+    }
+
+    async function loadNotes() {
+
+        const { data, error } =
+            await supabaseClient
+                .from("notes")
+                .select("*");
+
+        let html = "";
+
+        data.forEach(note => {html += `<p>${note.text}</p>`;});
+
+        document.getElementById("notes").innerHTML = html;
+
+    }
+
+    checkUser();
+</script>
 
 </html>
