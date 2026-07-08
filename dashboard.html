@@ -12,16 +12,21 @@
 <body>
 
     <nav class="navbar">
+
         <h2>📝 Notes App</h2>
 
-        <button onclick="logout()">
-            Logout
-        </button>
+        <div>
+            <span id="userEmail"></span>
+
+            <button class="logout-btn" onclick="logout()">
+                Logout
+            </button>
+        </div>
+
     </nav>
 
     <div class="container">
 
-        <h3 id="userEmail"></h3>
 
         <input type="text" id="noteInput" placeholder="Enter Note">
 
