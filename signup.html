@@ -50,12 +50,21 @@
                 email,
                 password
             });
-
+            
         if (error) {
-            console.log(error);
-            alert(error.message);
+
+            if (
+                error.message.includes("already") ||
+                error.message.includes("registered")
+            ) {
+                alert("This email is already registered. Please login.");
+            } else {
+                alert(error.message);
+            }
+
             return;
         }
+
         alert("Account Created Successfully");
         window.location.href = "index.html";
     }
