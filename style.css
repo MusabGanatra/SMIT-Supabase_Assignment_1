@@ -89,9 +89,16 @@ a:hover {
     margin:0;
 }
 
+.navbar div{
+    display:flex;
+    gap:10px;
+    align-items:center;
+}
+
 .logout-btn{
     width:auto !important;
     padding:10px 20px;
+    margin-top:0;
     background:#ef4444;
     color:white;
     border:none;
@@ -133,38 +140,47 @@ a:hover {
 
 }
 
-.dark.navbar{
+body.dark .navbar{
     background:#1f2937;
     color:white;
 }
 
-.dark .navbar h2{
+body.dark .navbar h2{
     color:white;
 }
 
 .dark-btn{
+    width:50px !important;
+    margin-top:0;
+}
+
+body.dark-btn{
     width:auto !important;
     padding:10px 15px;
     margin-right:10px;
     border-radius:8px;
 }
 
-.dark{
+body.dark .navbar button{
+    width:auto;
+}
+
+body.dark{
     background:#111827;
     color:white;
 }
 
-.dark .container{
+body.dark .container{
     background:#1f2937;
 }
 
-.dark .note-card{
+body.dark .note-card{
     background:#374151;
     color:white;
 }
 
-.dark .input,
-.dark .select{
+body.dark .input,
+body.dark .select{
     background:#4b5563;
     color:white;
     border:none;
