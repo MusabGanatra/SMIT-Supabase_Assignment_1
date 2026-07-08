@@ -153,3 +153,7 @@ a:hover {
     color:white;
     border:none;
 }
+
+body.dark{
+    background:red !important;
+}
