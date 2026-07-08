@@ -133,27 +133,25 @@ a:hover {
 
 }
 
-.dark{
+body.dark{
     background:#111827;
     color:white;
 }
 
-.dark .container{
+body.dark.container{
     background:#1f2937;
 }
 
-.dark .note-card{
+body.dark.note-card{
     background:#374151;
     color:white;
 }
 
-.dark input,
-.dark select{
+body.dark.input,
+.dark.select{
     background:#4b5563;
     color:white;
     border:none;
 }
 
-body.dark{
-    background:red !important;
-}
+
