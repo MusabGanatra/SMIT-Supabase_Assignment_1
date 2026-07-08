@@ -217,4 +217,19 @@ body.dark .select{
     border:none;
 }
 
+#timeLeftBox{
+    position:fixed;
+    top:80px;
+    left:20px;
 
+    font-size:24px;
+    font-weight:bold;
+
+    color:#ef4444;
+
+    z-index:999;
+}
+
+body.dark #timeLeftBox{
+    color:#facc15;
+}
