@@ -1,58 +1,64 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Signup</title>
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<h2>Create Account</h2>
+    <div class="container">
 
-<input type="email" id="email" placeholder="Email">
-<br><br>
+        <h2>Create Account</h2>
 
-<input type="password" id="password" placeholder="Password">
-<br><br>
+        <input type="email" id="email" placeholder="Email">
 
-<button onclick="signup()">Create Account</button>
+        <input type="password" id="password" placeholder="Password">
 
-<p>
-    <a href="index.html">Already have an account? Login</a>
-</p>
+        <button onclick="signup()">Create Account</button>
+
+        <p>
+            <a href="index.html">Already have an account? Login</a>
+        </p>
+
+    </div>
 
 </body>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-const supabaseUrl = "https://mfwcibpbeqqtgbyyught.supabase.co";
-const supabaseKey = "sb_publishable_NvwPu7CHkFZkr45OyUO8oQ_FcY54C17";
+    const supabaseUrl = "https://mfwcibpbeqqtgbyyught.supabase.co";
+    const supabaseKey = "sb_publishable_NvwPu7CHkFZkr45OyUO8oQ_FcY54C17";
 
-const supabaseClient = supabase.createClient(
-  supabaseUrl,
-  supabaseKey
-);
+    const supabaseClient = supabase.createClient(
+        supabaseUrl,
+        supabaseKey
+    );
 
-async function signup() {
+    async function signup() {
 
-  const email =
-    document.getElementById("email").value;
+        const email =
+            document.getElementById("email").value;
 
-  const password =
-    document.getElementById("password").value;
+        const password =
+            document.getElementById("password").value;
 
-  const { data, error } =
-    await supabaseClient.auth.signUp({
-      email,
-      password
-    });
+        const { data, error } =
+            await supabaseClient.auth.signUp({
+                email,
+                password
+            });
 
-  if(error){
-    alert(error.message);
-    return;
-  }
+        if (error) {
+            alert(error.message);
+            return;
+        }
 
-  alert("Account Created Successfully");
-  window.location.href = "index.html";
-}
+        alert("Account Created Successfully");
+        window.location.href = "index.html";
+    }
 </script>
 
 </html>
