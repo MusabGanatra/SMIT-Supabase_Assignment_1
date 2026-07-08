@@ -133,6 +133,22 @@ a:hover {
 
 }
 
+body.dark.navbar{
+    background:#1f2937;
+    color:white;
+}
+
+body.dark.navbar h2{
+    color:white;
+}
+
+.dark-btn{
+    width:auto !important;
+    padding:10px 15px;
+    margin-right:10px;
+    border-radius:8px;
+}
+
 body.dark{
     background:#111827;
     color:white;
