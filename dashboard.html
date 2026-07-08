@@ -106,7 +106,7 @@
             await supabaseClient
                 .from("notes")
                 .select("*")
-                .eq("user_id", user.id);
+                .eq("user_id", user.id)
                 .order("created_at", { ascending: false });
 
 
@@ -136,6 +136,13 @@
     }
 
     async function deleteNote(id) {
+
+        const confirmDelete =
+            confirm("Are you sure you want to delete this note?");
+
+        if (!confirmDelete) {
+            return;
+        }
 
         await supabaseClient
             .from("notes")
