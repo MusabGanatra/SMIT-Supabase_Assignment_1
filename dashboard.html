@@ -27,6 +27,7 @@
 
     <div class="container">
 
+        <input type="text" id="searchInput" placeholder="Search Notes..." onkeyup="searchNotes()">
 
         <input type="text" id="noteInput" placeholder="Enter Note">
 
@@ -71,6 +72,30 @@
     async function logout() {
         await supabaseClient.auth.signOut();
         window.location.href = "index.html";
+    }
+
+    function searchNotes() {
+
+        const search =
+            document.getElementById("searchInput")
+                .value
+                .toLowerCase();
+
+        const cards =
+            document.querySelectorAll(".note-card");
+
+        cards.forEach(card => {
+
+            const text =
+                card.innerText.toLowerCase();
+
+            if (text.includes(search)) {
+                card.style.display = "block";
+            } else {
+                card.style.display = "none";
+            }
+
+        });
     }
 
     async function addNote() {
