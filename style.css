@@ -133,12 +133,12 @@ a:hover {
 
 }
 
-body.dark.navbar{
+.dark .navbar{
     background:#1f2937;
     color:white;
 }
 
-body.dark.navbar h2{
+.dark .navbar h2{
     color:white;
 }
 
@@ -149,22 +149,22 @@ body.dark.navbar h2{
     border-radius:8px;
 }
 
-body.dark{
+.dark{
     background:#111827;
     color:white;
 }
 
-body.dark.container{
+.dark .container{
     background:#1f2937;
 }
 
-body.dark.note-card{
+.dark .note-card{
     background:#374151;
     color:white;
 }
 
-body.dark.input,
-.dark.select{
+.dark .input,
+.dark .select{
     background:#4b5563;
     color:white;
     border:none;
