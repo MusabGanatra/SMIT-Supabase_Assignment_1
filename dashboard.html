@@ -15,15 +15,16 @@
 
         <h2>📝 Notes App</h2>
 
-        <div>
-            <span id="userEmail"></span>
+        <div class="nav-actions">
+
+            <button id="themeBtn" class="dark-btn" onclick="toggleDarkMode()">
+                🌙
+            </button>
 
             <button class="logout-btn" onclick="logout()">
                 Logout
             </button>
-            <button onclick="toggleDarkMode()">
-                🌙
-            </button>
+
         </div>
 
     </nav>
@@ -179,7 +180,7 @@
 
         data.forEach(note => {
             html +=
-            `<div class="note-card">
+                `<div class="note-card">
             <p>
                 ${note.text}
             </p>
