@@ -11,9 +11,15 @@
 
 <body>
 
-    <div class="container">
+    <nav class="navbar">
+        <h2>📝 Notes App</h2>
 
-        <h1>Dashboard</h1>
+        <button onclick="logout()">
+            Logout
+        </button>
+    </nav>
+
+    <div class="container">
 
         <h3 id="userEmail"></h3>
 
@@ -24,10 +30,6 @@
         </button>
 
         <div id="notes"></div>
-
-        <button onclick="logout()">
-            Logout
-        </button>
 
     </div>
 </body>
@@ -68,14 +70,20 @@
 
     async function addNote() {
 
-        const text =
-            document.getElementById("noteInput").value;
+        const text = document.getElementById("noteInput").value;
+
+        const {
+            data: { user }
+        } = await supabaseClient.auth.getUser();
 
         const { error } =
             await supabaseClient
                 .from("notes")
                 .insert([
-                    { text }
+                    {
+                        text: text,
+                        user_id: user.id
+                    }
                 ]);
 
         if (error) {
@@ -83,22 +91,74 @@
             return;
         }
 
+        document.getElementById("noteInput").value = "";
+
         loadNotes();
     }
 
     async function loadNotes() {
 
+        const {
+            data: { user }
+        } = await supabaseClient.auth.getUser();
+
         const { data, error } =
             await supabaseClient
                 .from("notes")
-                .select("*");
+                .select("*")
+                .eq("user_id", user.id);
+
+
+        if (error) {
+            alert(error.message);
+            return;
+        }
 
         let html = "";
 
-        data.forEach(note => { html += `<p>${note.text}</p>`; });
+        data.forEach(note => {
+            html += `<div class="note-card">
+        <p>${note.text}</p>
+
+        <button onclick="editNote('${note.id}')">
+          ✏ Edit
+        </button>
+
+        <button onclick="deleteNote('${note.id}')">
+            🗑 Delete
+        </button>
+        
+        </div>`;
+        });
 
         document.getElementById("notes").innerHTML = html;
+    }
 
+    async function deleteNote(id) {
+
+        await supabaseClient
+            .from("notes")
+            .delete()
+            .eq("id", id);
+
+        loadNotes();
+    }
+
+    async function editNote(id) {
+
+        const newText =
+            prompt("Enter new note");
+
+        if (!newText) return;
+
+        await supabaseClient
+            .from("notes")
+            .update({
+                text: newText
+            })
+            .eq("id", id);
+
+        loadNotes();
     }
 
     checkUser();
