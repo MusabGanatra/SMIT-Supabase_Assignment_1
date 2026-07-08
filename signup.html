@@ -51,11 +51,11 @@
                 password
             });
 
-if(error){
-  console.log("FULL ERROR:", error);
-  alert(JSON.stringify(error));
-  return;
-}
+        if (error) {
+            console.log(error);
+            alert(error.message);
+            return;
+        }
         alert("Account Created Successfully");
         window.location.href = "index.html";
     }
