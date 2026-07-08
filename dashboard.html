@@ -29,6 +29,8 @@
 
     </nav>
 
+    <div id="timeLeftBox"></div>
+
     <div class="container">
 
         <h3 id="userEmail"></h3>
@@ -74,8 +76,7 @@
     }
 
     if (
-        localStorage.getItem("darkMode")
-        === "true"
+        localStorage.getItem("darkMode") === "true"
     ) {
         document.body.classList.add("dark");
     }
@@ -95,12 +96,17 @@
             data: { user }
         } = await supabaseClient.auth.getUser();
 
-        document.getElementById("userEmail").innerText = user.email;
+        document.getElementById("userEmail").innerText =
+            user.email;
+
         loadNotes();
+        checkLimit();
     }
 
     async function logout() {
+
         await supabaseClient.auth.signOut();
+
         window.location.href = "index.html";
     }
 
@@ -119,32 +125,60 @@
             const text =
                 card.innerText.toLowerCase();
 
-            if (text.includes(search)) {
-                card.style.display = "block";
-            } else {
-                card.style.display = "none";
-            }
-
+            card.style.display =
+                text.includes(search)
+                    ? "block"
+                    : "none";
         });
     }
 
     async function addNote() {
 
-        const category = document.getElementById("category").value;
+        const text =
+            document.getElementById("noteInput").value;
 
-        const text = document.getElementById("noteInput").value;
+        const category =
+            document.getElementById("category").value;
+
+        if (!text.trim()) {
+            alert("Enter Note First");
+            return;
+        }
 
         const {
             data: { user }
         } = await supabaseClient.auth.getUser();
+
+        const last24Hours =
+            new Date(
+                Date.now() - 24 * 60 * 60 * 1000
+            ).toISOString();
+
+        const { data: notesCount } =
+            await supabaseClient
+                .from("notes")
+                .select("*")
+                .eq("user_id", user.id)
+                .gte("created_at", last24Hours);
+
+        if (notesCount.length >= 5) {
+
+            alert(
+                "24 Hours me sirf 5 notes add kar sakte hain"
+            );
+
+            checkLimit();
+
+            return;
+        }
 
         const { error } =
             await supabaseClient
                 .from("notes")
                 .insert([
                     {
-                        text: text,
-                        category: category,
+                        text,
+                        category,
                         user_id: user.id
                     }
                 ]);
@@ -157,6 +191,93 @@
         document.getElementById("noteInput").value = "";
 
         loadNotes();
+        checkLimit();
+    }
+
+    async function checkLimit() {
+
+        const {
+            data: { user }
+        } = await supabaseClient.auth.getUser();
+
+        const last24Hours =
+            new Date(
+                Date.now() - 24 * 60 * 60 * 1000
+            ).toISOString();
+
+        const { data } =
+            await supabaseClient
+                .from("notes")
+                .select("*")
+                .eq("user_id", user.id)
+                .gte("created_at", last24Hours)
+                .order("created_at", { ascending: true });
+
+        if (data.length < 5) {
+
+            document.getElementById(
+                "timeLeftBox"
+            ).innerHTML = "";
+
+            return;
+        }
+
+        const firstNoteTime =
+            new Date(data[0].created_at);
+
+        const nextAllowed =
+            firstNoteTime.getTime() +
+            (24 * 60 * 60 * 1000);
+
+        updateCountdown(nextAllowed);
+    }
+
+    function updateCountdown(nextAllowed) {
+
+        const timer =
+            document.getElementById("timeLeftBox");
+
+        setInterval(() => {
+
+            const now =
+                new Date().getTime();
+
+            const distance =
+                nextAllowed - now;
+
+            if (distance <= 0) {
+
+                timer.innerHTML =
+                    "✅ You can add notes again";
+
+                return;
+            }
+
+            const hours =
+                Math.floor(
+                    distance /
+                    (1000 * 60 * 60)
+                );
+
+            const minutes =
+                Math.floor(
+                    (distance %
+                        (1000 * 60 * 60))
+                    / (1000 * 60)
+                );
+
+            const seconds =
+                Math.floor(
+                    (distance %
+                        (1000 * 60))
+                    / 1000
+                );
+
+            timer.innerHTML =
+                `⏳ Time Left<br>
+            ${hours}h ${minutes}m ${seconds}s`;
+
+        }, 1000);
     }
 
     async function loadNotes() {
@@ -170,8 +291,8 @@
                 .from("notes")
                 .select("*")
                 .eq("user_id", user.id)
-                .order("created_at", { ascending: false });
-
+                .order("created_at",
+                    { ascending: false });
 
         if (error) {
             alert(error.message);
@@ -181,44 +302,50 @@
         let html = "";
 
         data.forEach(note => {
-            html +=
-                `<div class="note-card">
-            <p>
-                ${note.text}
-            </p>
+
+            html += `
+        <div class="note-card">
+
+            <p>${note.text}</p>
 
             <p>
                 📂 ${note.category}
             </p>
 
             <small>
-                ${new Date(note.created_at).toLocaleString()}
+                ${new Date(
+                note.created_at
+            ).toLocaleString()}
             </small>
 
             <br><br>
 
-            <button onclick="editNote('${note.id}')">
-             ✏ Edit
+            <button
+            onclick="editNote('${note.id}')">
+                ✏ Edit
             </button>
 
-            <button onclick="deleteNote('${note.id}')">
+            <button
+            onclick="deleteNote('${note.id}')">
                 🗑 Delete
             </button>
 
-        </div>`;
+        </div>
+        `;
         });
 
-        document.getElementById("notes").innerHTML = html;
+        document.getElementById("notes")
+            .innerHTML = html;
     }
 
     async function deleteNote(id) {
 
         const confirmDelete =
-            confirm("Are you sure you want to delete this note?");
+            confirm(
+                "Are you sure you want to delete this note?"
+            );
 
-        if (!confirmDelete) {
-            return;
-        }
+        if (!confirmDelete) return;
 
         await supabaseClient
             .from("notes")
@@ -226,6 +353,7 @@
             .eq("id", id);
 
         loadNotes();
+        checkLimit();
     }
 
     async function editNote(id) {
