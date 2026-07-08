@@ -5,55 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+    <link rel="stylesheet" href="style.css">
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-
-        .card {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            width: 350px;
-        }
-
-        h1 {
-            margin-bottom: 10px;
-        }
-
-        p {
-            color: #555;
-        }
-
-        button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 15px;
-        }
-    </style>
 </head>
 
 <body>
 
-    <div class="card">
+    <div class="container">
+
         <h1>Dashboard</h1>
 
-        <p>Welcome</p>
+        <h3 id="userEmail"></h3>
 
         <input type="text" id="noteInput" placeholder="Enter Note">
-
-        <br><br>
 
         <button onclick="addNote()">
             Add Note
@@ -64,8 +28,8 @@
         <button onclick="logout()">
             Logout
         </button>
-    </div>
 
+    </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -131,7 +95,7 @@
 
         let html = "";
 
-        data.forEach(note => {html += `<p>${note.text}</p>`;});
+        data.forEach(note => { html += `<p>${note.text}</p>`; });
 
         document.getElementById("notes").innerHTML = html;
 
